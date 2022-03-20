@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dc35aa60-374c-4af1-972b-62b748a0302c" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="46bffd6d-ae67-48de-9d03-e185d5f81152" >
+		<wsc:connection wsdlLocation="${Soap.wsdl}" service="${Soap.service}" port="${Soap.port}" address="${Soap.address}" soapVersion="SOAP12"/>
+	</wsc:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="b4c63641-a14d-4b74-a41f-ec3a3a560c1e" file="${env}-properties.yaml" />
+	<global-property doc:name="Global Property" doc:id="abba63b2-62c9-4174-bb5a-aea63b687791" name="env" value="dev" />
+</mule>

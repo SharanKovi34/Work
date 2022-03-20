@@ -1,0 +1,10 @@
+Soap:
+ wsdl: "http://www.dneonline.com/calculator.asmx?WSDL"
+ port: "CalculatorSoap"
+ service: "Calculator"
+ address: "http://www.dneonline.com/calculator.asmx"
+
+http:
+ host: "0.0.0.0"
+ port: "8081"
+ 

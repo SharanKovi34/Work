@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="webserviceprojFlow" doc:id="e2face8a-2c5e-420a-a43b-2d08f471392c" >
+		<http:listener doc:name="Listener" doc:id="297d84cb-4d25-4ec5-a7c3-6b7e72d8524f" config-ref="HTTP_Listener_config" path="/webService" outputMimeType="application/json">
+			<http:response >
+				<http:body ><![CDATA[#[%dw 2.0
+output application/json
+---
+payload.body]]]></http:body>
+			</http:response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="5673b09b-fa79-44f6-b86b-59821738bdaf" message='#["Started the web Service Application"]'/>
+		<ee:transform doc:name="Transform Message" doc:id="5611e96d-fbf8-46ee-9912-609f464c74b1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://tempuri.org/
+---
+{
+	ns0#Add: {
+		ns0#intA: payload.x,
+		ns0#intB: payload.y
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="Add" doc:name="Consume" doc:id="d4654e34-c5ed-42d9-b7d0-2f3005a8d8ee" config-ref="Web_Service_Consumer_Config"/>
+	</flow>
+</mule>
