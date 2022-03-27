@@ -1,0 +1,15 @@
+http:
+ host: "localhost"
+ port: "8082"
+
+file: 
+  workingDir: C:\Users\USER\fileworking
+  input: C:\Users\USER\fileworking\Input
+  output: C:\Users\USER\fileworking\Output
+  name: "*.csv"
+  frequency: "10"
+  rename: "empl.txt"
+  copy: "copy"
+  move: "move"
+  cronexp: ""
+   

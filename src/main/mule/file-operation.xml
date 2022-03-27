@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="read-operationFlow" doc:id="6a56a7cd-c748-41dc-8d47-159aaa79b08d" >
+		<http:listener doc:name="Listener" doc:id="dbd77948-f744-4eb0-a302-945469899ce2" config-ref="HTTP_Listener_config" path="/fileRead"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b43dea00-dd87-439b-bc55-cbbcce3105f6" message='#["Read operation initialized"]'/>
+		<file:read doc:name="Read" doc:id="2941d510-fe50-4645-acb1-1f73dde8d091" config-ref="File_Config" path="${file.input}/emp44.txt" outputMimeType="application/json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0663edc3-dd3e-4124-80f1-377fc2be5f60" message='#["read operation finished"]'/>
+	</flow>
+	<flow name="write-operationFlow" doc:id="bdf58a2f-c856-45cb-9447-52d6494353d0" >
+		<http:listener doc:name="Listener" doc:id="249a638b-d1df-4e2e-b5fe-c110647baaec" config-ref="HTTP_Listener_config" path="/writeOp"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5912e217-c348-4725-8d79-54e427e6d546" message='#["Write operation initialized"]'/>
+		<file:write doc:name="Write" doc:id="df3a3190-0765-4d8a-9684-877b414d4824" config-ref="File_Config" path="${file.output}/emp.txt" lock="true" mode="CREATE_NEW">
+			<reconnect />
+		</file:write>
+		<logger level="INFO" doc:name="Logger" doc:id="39249b10-a7cf-4e17-a2e6-ae0b21594246" message='#["write operation finished"]'/>
+	</flow>
+	<flow name="list-operationFlow" doc:id="557443bc-d0dc-436f-876c-f9d16618583b" >
+		<http:listener doc:name="Listener" doc:id="477e39e9-d1b2-4bf4-8748-e47269d6d72e" config-ref="HTTP_Listener_config" path="/listOp" outputMimeType="application/json">
+			<http:response >
+				<http:body ><![CDATA[#[%dw 2.0
+output application/json
+---
+payload]]]></http:body>
+			</http:response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="896be634-0350-45a1-b4b0-e4c517b2ca20" message='#["list operation is started"]'/>
+		<file:list doc:name="List" doc:id="5562ff6a-b26e-4959-bf41-7ee95b208ff6" config-ref="File_Config" directoryPath="${file.output}">
+		</file:list>
+		<logger level="INFO" doc:name="Logger" doc:id="4176c775-cc2d-4a0a-8471-b1ba72260687" message="#[%dw 2.0
+output application/json
+---
+payload]" category="*****list file and payload******"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bd2763b9-b400-4825-aad1-7fc1d34b3bdc" message='#["List operation finished"]'/>
+	</flow>
+	<flow name="move-operationFlow" doc:id="a736678d-8db0-48e6-b83d-68f628c26393" >
+		<http:listener doc:name="Listener" doc:id="e4a321fd-4bb3-40ef-b1c2-f0a9579c7cda" config-ref="HTTP_Listener_config" path="/fileMove"/>
+		<logger level="INFO" doc:name="Logger" doc:id="176dec8a-c2a4-4c00-a046-e892d0990ff0" message='#["file move operation started"]'/>
+		<file:move doc:name="Move" doc:id="a5732bae-6ed1-42df-8c40-730dba2cc529" config-ref="File_Config" sourcePath="C:\Users\USER\fileworking\Output\emp.txt" targetPath="C:\Users\USER\fileworking\move" renameTo="emp1.txt"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d9b67402-31e6-441d-b1ef-abb2a0975bbf" message='#["file move operation finished"]'/>
+	</flow>
+	<flow name="Rename-operationFlow" doc:id="276b489c-1761-4c93-91b2-18f7765d7427" >
+		<http:listener doc:name="Listener" doc:id="6d7f87cf-6454-4abe-9493-cccdb48c7e4d" config-ref="HTTP_Listener_config" path="/fileRename"/>
+		<logger level="INFO" doc:name="Logger" doc:id="30c58f17-eaff-4f73-88ff-d6905167e7c3" message='#["rename started"]'/>
+		<file:rename doc:name="Rename" doc:id="016570cd-0b91-486a-b543-a2984e82a2f3" config-ref="File_Config" path="C:\Users\USER\fileworking\Rename\employee.txt" to="emps.txt"/>
+		<logger level="INFO" doc:name="Logger" doc:id="85849189-bc09-4670-9063-2b3c9eda55a5" message='#["finished rename"]'/>
+	</flow>
+	<flow name="copy-operationFlow" doc:id="bcbb13b0-0efb-4127-a130-f4fb519a4345" >
+		<http:listener doc:name="Listener" doc:id="1471f6c9-d61a-4593-804b-0475c927e0e9" config-ref="HTTP_Listener_config" path="/fileCopy"/>
+		<logger level="INFO" doc:name="Logger" doc:id="467b9c75-b882-46eb-b312-ec10d1b1eb81" message='#["file copy started"]'/>
+		<file:copy doc:name="Copy" doc:id="d00d7ebd-fcf2-449e-966a-e1ec7aa16479" sourcePath="C:\Users\USER\fileworking\Input\emp44.txt" targetPath="C:\Users\USER\fileworking\copy" renameTo="emp33.txt"/>
+		<logger level="INFO" doc:name="Logger" doc:id="356641a0-89e5-4e37-aa12-bc37e704711d" message='#["file copy finished"]'/>
+	</flow>
+	<flow name="delete-operationFlow" doc:id="45e57933-7068-4139-a1cd-f7fbc875444d" >
+		<http:listener doc:name="Listener" doc:id="ccd33f5f-6f9e-4810-8ada-0fdd8ec7bb5e" config-ref="HTTP_Listener_config" path="/fileDelete"/>
+		<logger level="INFO" doc:name="Logger" doc:id="48d20c94-a196-4d01-b8ba-f14377cd1152" message='#["file delete started"]'/>
+		<file:delete doc:name="Delete" doc:id="67f67365-9d1e-4b2d-bd29-d3585ea52168" config-ref="File_Config" path="C:\Users\USER\fileworking\Delete\employ.txt"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0f8d54bc-039e-44df-8bf1-4c1fa32545e1" message='#["file delete finished"]'/>
+	</flow>
+	<flow name="createDir-operationFlow" doc:id="238a9ce2-804f-4489-88c9-64b2cd2f6a02" >
+		<http:listener doc:name="Listener" doc:id="0bfe0cf8-9829-45b8-81ab-e86da1cebce9" config-ref="HTTP_Listener_config" path="/createDir"/>
+		<logger level="INFO" doc:name="Logger" doc:id="92b30dd7-a03f-46f4-9097-8358d39c078c" message='#["create Dir"]'/>
+		<file:create-directory doc:name="Create directory" doc:id="6be0e568-34c7-4a6c-9a50-7fe9eb778f5f" config-ref="File_Config" directoryPath="C:\Users\USER\fileworking\Direct"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c4abe680-1ff6-431d-b564-691d8e769c09" message='#["finished Dir"]'/>
+	</flow>
+	<flow name="file-operationFlow" doc:id="f16e9d9f-4f6d-4613-b4a6-219564300fce" >
+		<file:listener doc:name="On New or Updated File" doc:id="7d18645d-2193-487d-9083-454798221bed" config-ref="File_Config" directory="C:\Users\USER\fileworking\polling" watermarkMode="MODIFIED_TIMESTAMP" timeBetweenSizeCheck="20" timeBetweenSizeCheckUnit="SECONDS">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</file:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="3a4f1c47-55d8-48ee-b6ac-c00d067248db" message='#["polling triggered"]'/>
+	</flow>
+</mule>
