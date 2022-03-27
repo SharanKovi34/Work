@@ -8,3 +8,7 @@ http:
  host: "0.0.0.0"
  port: "8081"
  
+rest:
+ host: "reqres.in"
+ port: "80"
+ path: "/api/users"

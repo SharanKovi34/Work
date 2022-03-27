@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="rest-invokeFlow" doc:id="413b1518-bca4-4b4e-b78f-ec26f4db8912" >
+		<http:listener doc:name="Listener" doc:id="8e3121f3-fe53-44d0-b2b2-dc22e52ae90a" config-ref="HTTP_Listener_config" path="/invokeRest"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a5669492-9323-47c7-9c73-6c7b389b685c" message='#["rest service started"]'/>
+		<http:request method="GET" doc:name="Request" doc:id="68c7f2cd-71c2-4605-87a7-9adf13b3256b" config-ref="HTTP_Request_configuration" path="${rest.path}">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"page" : attributes.queryParams.value
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="73eef3eb-7eaa-45fa-b40b-08968695c95f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.data
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="9795ed16-88a2-4cc0-a3f4-f241133e5b2d" message='#["Finished rest service"]'/>
+	</flow>
+</mule>

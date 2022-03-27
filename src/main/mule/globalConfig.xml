@@ -13,4 +13,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	</wsc:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="b4c63641-a14d-4b74-a41f-ec3a3a560c1e" file="${env}-properties.yaml" />
 	<global-property doc:name="Global Property" doc:id="abba63b2-62c9-4174-bb5a-aea63b687791" name="env" value="dev" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="9decc13c-5ac4-4771-9c15-de9b86af2100" >
+		<http:request-connection host="${rest.host}" port="${rest.port}" />
+	</http:request-config>
 </mule>
